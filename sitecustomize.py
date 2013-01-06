@@ -1,11 +1,10 @@
 
 import sys
-import os
 
 from combinator.branchmgr import theBranchManager
 theBranchManager.addPaths()
 
-for key in sys.modules.keys():
+for key in list(sys.modules.keys()):
     # Unload all Combinator modules that had to be loaded in order to call
     # addPaths().  Although the very very beginning of this script needs to
     # load the trunk combinator (or whichever one your shell points at), once

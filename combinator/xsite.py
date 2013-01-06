@@ -67,7 +67,7 @@ def addpackage(sitedir, name, known_paths, syspath):
             if line.startswith("#"):
                 continue
             if line.startswith("import"):
-                exec line
+                exec(line)
                 continue
             line = line.rstrip()
             dir, dircase = makepath(sitedir, line)

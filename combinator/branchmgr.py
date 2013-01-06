@@ -125,11 +125,11 @@ def runcmd(*args):
     display its output.
     """
     popenstr = commandString(args)
-    print prompt(popenstr)
+    print(prompt(popenstr))
 
     output, code = runCommand(popenstr)
 
-    print 'C: ' + '\nC: '.join(output.splitlines())
+    print('C: ' + '\nC: '.join(output.splitlines()))
     return checkStatus(popenstr, output, code)
 
 
@@ -339,7 +339,7 @@ class BranchManager:
             if yth.endswith('.bch'):
                 yth = os.path.join(self.sitePathsPath, yth)
                 projName = os.path.splitext(os.path.split(yth)[-1])[0]
-                branchPath = file(yth).read().strip()
+                branchPath = open(yth).read().strip()
                 yield projName, branchPath
 
 
@@ -378,7 +378,7 @@ class BranchManager:
 
     def currentBranchFor(self, projectName):
 
-        return file(os.path.join(self.sitePathsPath, projectName)+'.bch'
+        return open(os.path.join(self.sitePathsPath, projectName)+'.bch'
                     ).read().strip()
 
 
@@ -506,7 +506,7 @@ class BranchManager:
                     for line in statusf.splitlines():
                         if line[0] == '?' or line[0] == 'I':
                             unknownFile = line[7:].strip()
-                            print 'removing unknown:', unknownFile
+                            print('removing unknown: ' + str(unknownFile))
                             if os.path.isdir(unknownFile):
                                 shutil.rmtree(unknownFile)
                             else:
@@ -518,7 +518,7 @@ class BranchManager:
             if not os.path.exists(self.sitePathsPath):
                 os.makedirs(self.sitePathsPath)
 
-            f = file(os.path.join(self.sitePathsPath, projectName) + '.bch', 'w')
+            f = open(os.path.join(self.sitePathsPath, projectName) + '.bch', 'w')
             f.write(branchRelativePath)
             f.close()
         finally:
@@ -565,9 +565,9 @@ class BranchManager:
                     if not os.path.exists(dst):
                         stream.write('link: %r => %r\n <on account of %r>\n' %
                                      (dst, src, ent))
-                        file(dst, 'w').write(file(src).read())
+                        open(dst, 'w').write(open(src).read())
                         if os.name != 'nt':
-                            os.chmod(dst, 0755)
+                            os.chmod(dst, 0o755)
 
 
 
@@ -623,21 +623,21 @@ def _combinatorMain(operation, *args):
     """
     try:
         return operation(*args)
-    except MissingTrunkLocation, e:
+    except MissingTrunkLocation as e:
         raise SystemExit(
             "The location of %r trunk is not known.  Specify a URI as the "
             "3rd argument to check out a branch (check out trunk to make "
             "this unnecessary)." % e.args)
-    except NonExistentBranch, e:
+    except NonExistentBranch as e:
         raise SystemExit(
             "No such branch: %r" % e.args)
-    except DuplicateBranch, e:
+    except DuplicateBranch as e:
         raise SystemExit(
             "Branch named %r exists already." % e.args)
     except UncleanTrunkWorkingCopy:
         raise SystemExit(
             "Can't unbranch while trunk working copy contains modifications.")
-    except InvalidBranch, e:
+    except InvalidBranch as e:
         raise SystemExit("Cannot merge trunk.")
 
 
@@ -680,10 +680,10 @@ def whbranchMain(args):
     for k, v in _combinatorMain(theBranchManager.getCurrentBranches):
         if whichBranch is not None:
             if k == whichBranch:
-                print v
+                print(v)
                 break
         else:
-            print k + ":", v
+            print(k + ": " + v)
 
 
 
