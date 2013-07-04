@@ -506,7 +506,7 @@ class BranchManager:
                     for line in statusf.splitlines():
                         if line[0] == '?' or line[0] == 'I':
                             unknownFile = line[7:].strip()
-                            print('removing unknown: ' + str(unknownFile))
+                            print('removing unknown: ' + unknownFile)
                             if os.path.isdir(unknownFile):
                                 shutil.rmtree(unknownFile)
                             else:

@@ -460,6 +460,7 @@ class ChangeBranchTestsMixin:
             self.manager.currentBranchFor(projectName), branchName)
 
 
+
     def test_rejectDuplicateBranch(self):
         """
         L{BranchManager.newProjectBranch} should refuse to copy trunk into an
@@ -743,6 +744,33 @@ class BranchManagerChangeBranchTests(TestCase, ChangeBranchTestsMixin):
         self.commitBranch(projectName, branchName)
 
         self.manager.mergeProjectBranch(projectName)
+
+
+    def test_changeCurrentBranchDeletesUnknown(self):
+        """
+        If L{BranchManager.changeProjectBranch} creates a new working copy, it
+        doesn't contain extra unversioned files from the I{trunk} working copy.
+        """
+        projectName = 'Quux'
+        branchName = 'foo'
+
+        self.createRepository(
+            projectName, {'trunk': {},
+                          'branches':
+                              {branchName: {}}})
+
+        # Get a trunk checkout
+        self.manager.changeProjectBranch(
+            projectName, 'trunk', self.uri(projectName, 'trunk'))
+
+        # Here is some unversioned junk in the trunk working copy
+        self.modifyTrunk(projectName, "junk", "garbage")
+
+        self.manager.changeProjectBranch(projectName, branchName)
+
+        junk = FilePath(self.paths).descendant([
+                projectName, "branches", branchName, "junk"])
+        self.assertFalse(junk.exists())
 
 
 
